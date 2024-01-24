@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Savings Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        input, button {
+            margin-top: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Savings Calculator</h1>
+    <label for="distance">Flight Distance (km):</label>
+    <input type="number" id="distance" name="distance" value="14535"><br><br>
+    <label for="reduction">Water Weight Reduction (%):</label>
+    <input type="number" id="reduction" name="reduction" value="98"><br><br>
+    <button onclick="calculateSavings()">Calculate Savings</button>
+    <h2>Results:</h2>
+    <div id="results">
+        <!-- Results will be displayed here -->
+    </div>
+    <script>
+        function calculateSavings() {
+            // Input values
+            const distance = document.getElementById('distance').value;
+            const reduction = document.getElementById('reduction').value / 100;
+
+            // Constants and Assumptions
+            const averageFuelBurnRate = 5; // liters per km
+            const originalWaterWeight = 300; // kg
+            const fuelCostPerLiter = 2; // USD, assumed cost per liter of fuel
+            const euEtsCostPerTon = 50; // USD, assumed cost per ton of CO2 for EU ETS
+            const corsiaCostPerTon = 20; // USD, assumed cost per ton of CO2 for CORSIA
+
+            // Calculations
+            const reducedWaterWeight = originalWaterWeight * reduction;
+            const fuelSavingsLiters = distance * averageFuelBurnRate * (reducedWaterWeight / originalWaterWeight);
+            const fuelSavingsTons = fuelSavingsLiters * 0.8 / 1000; // converting liters to metric tons
+            const co2EmissionsSavedTons = fuelSavingsTons * 3.15;
+            const costSavingsUSD = fuelSavingsLiters * fuelCostPerLiter;
+            const euEtsSavingsUSD = co2EmissionsSavedTons * euEtsCostPerTon;
+            const corsiaSavingsUSD = co2EmissionsSavedTons * corsiaCostPerTon;
+
+            // Display Results
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <p>Fuel Savings: ${fuelSavingsTons.toFixed(2)} metric tons</p>
+                <p>CO2 Emissions Saved: ${co2EmissionsSavedTons.toFixed(2)} metric tons</p>
+                <p>Cost Savings: $${costSavingsUSD.toFixed(2)} USD</p>
+                <p>EU ETS Penalty Savings: $${euEtsSavingsUSD.toFixed(2)} USD</p>
+                <p>CORSIA Penalty Savings: $${corsiaSavingsUSD.toFixed(2)} USD</p>
+            `;
+        }
+
+        window.onload = function() {
+            calculateSavings();
+        }
+    </script>
+</body>
+</html>
